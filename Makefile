@@ -6,7 +6,7 @@
 #    By: plashkar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/13 14:11:07 by plashkar          #+#    #+#              #
-#    Updated: 2024/05/16 11:53:25 by plashkar         ###   ########.fr        #
+#    Updated: 2024/05/20 15:17:23 by plashkar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,9 @@ SRC = \
 	src/parser.c \
 	src/init.c \
 	src/test.c \
+	src/clean_up.c \
+	src/setter_and_getter.c \
+	src/simulation.c \
 
 OBJ = $(SRC:.c=.o)
 

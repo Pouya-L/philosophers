@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:14:17 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/13 20:59:06 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/20 15:04:42 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@ int	main(int argc, char **argv)
 		if (check_args(argv, &table))
 			return (1);
 		if (data_init(&table))
-			return (1);
-		
+			return (free_everything(&table));
+
+		free_everything(&table);
+
 	}
 	else
 		return (error_msg("Invalid number of arguments, use 5 or 6 arguments only"));

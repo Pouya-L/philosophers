@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:16:32 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/16 12:42:09 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/20 15:10:42 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,23 +75,34 @@ struct s_simulation
 	int					end_of_simulation;
 	t_forks				*forks;
 	t_philos			*philos;
+	pthread_mutex_t		*table_mutex;
 };
 
+//utils
 int		error_msg(char *msg);
-
 long	ft_atol(const char *str);
 long	ft_l_overflow_err(int sign);
-
 int		check_args(char **argv, t_simulation *table);
 
+//data init
 int		mutex_op(t_opcode opcode, pthread_mutex_t *mutex);
 int		p_thread_op(t_opcode opcode, pthread_t *thread, void *(*func)(void *), void *arg);
-
 int		data_init(t_simulation *table);
 
 //test functions
 int		test_print_table_info(t_simulation *table);
 void	test_print_fork_data(t_simulation *table);
 void	test_print_philo_data(t_simulation *table);
+
+//setter and getter
+void	set_int(pthread_mutex_t *mutex, int *dest_int, int value_to_set);
+int		get_int(pthread_mutex_t *mutex, int *value);
+void	set_long(pthread_mutex_t *mutex, long *dest_long, long value_to_set);
+long	get_long(pthread_mutex_t *mutex, long *value);
+
+//clean up
+int		free_everything(t_simulation *table);
+void	free_forks(t_simulation *table);
+
 
 #endif

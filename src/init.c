@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 21:00:31 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/16 12:11:49 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:04:31 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,26 +51,35 @@ void	set_up_philos(t_simulation *table)
 
 }
 
+void	table_flags_init(t_simulation *table)
+{
+	table->end_of_simulation = 0;
+	table->
+}
+
 int	data_init(t_simulation *table)
 {
 	int	i;
 
-	i  = 0;
+	i = -1;
 	table->end_of_simulation = 0;
+	table->table_mutex = malloc(sizeof(pthread_mutex_t));
+	if (!table->table_mutex)
+		return (error_msg("data_init: table->table_mutex: Malloc failed"));
+	if (mutex_op(MUTEX_INIT, table->table_mutex))
+		return (1);
 	table->forks = malloc(sizeof(t_forks) * table->philo_cnt);
 	if (!table->forks)
 		return (error_msg("data_init: table->forks: Malloc failed"));
-	while (i < table->philo_cnt)
+	while (++i < table->philo_cnt)
 	{
 		if (mutex_op(MUTEX_INIT, &table->forks[i].fork))
 			return (1);
 		table->forks[i].fork_id = i;
-		i++;
 	}
 	table->philos = malloc(sizeof(t_philos) * table->philo_cnt);
 	if (!table->philos)
 		return (error_msg("data_init: table->philos: Malloc failed"));
-	i = 0;
 	set_up_philos(table);
 	return (0);
 }

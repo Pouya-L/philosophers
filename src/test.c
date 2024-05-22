@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 11:51:19 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/16 11:55:19 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/22 18:12:48 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ void	test_print_philo_data(t_simulation *table)
 	while (i < table->philo_cnt)
 	{
 		philo = &table->philos[i];
-		printf("\nPhilo ID: %d\nMeals: %d\nTime since last meal: %d\nIs full: %d\n", \
-		philo->philo_id, philo->meals_cnt, philo->time_since_last_meal, philo->is_full);
+		printf("\nPhilo ID: %d\nMeals: %d\nTime since last meal: %ld\nIs full: %d\n", \
+		philo->philo_id, philo->meals_cnt, philo->last_meal_time, philo->is_full);
 		printf("\nFirst Fork: %d\nSecond Fork: %d\n", philo->first_fork->fork_id, philo->second_fork->fork_id);
 		i++;
 	}

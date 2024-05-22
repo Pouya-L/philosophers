@@ -6,18 +6,28 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 21:00:31 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/20 16:04:31 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/22 16:29:45 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+
+int	destroy_fork_init(t_simulation *table, int i)
+{
+	while(i >= 0)
+	{
+		mutex_op(MUTEX_DESTROY, &table->forks[i].fork);
+		i--;
+	}
+	return (1);
+}
 
 void	assign_forks_each(t_philos *philo, long philo_pos, t_forks *forks)
 {
 	long	philo_cnt;
 
 	philo_cnt = philo->table->philo_cnt;
-	if (philo->philo_id % 2)
+	if (philo->philo_id % 2 == 0)
 	{
 		philo->first_fork = &forks[philo_pos];
 		philo->second_fork = &forks[(philo_pos + 1) % philo_cnt];
@@ -31,7 +41,7 @@ void	assign_forks_each(t_philos *philo, long philo_pos, t_forks *forks)
 /**
  *
 */
-void	set_up_philos(t_simulation *table)
+int	set_up_philos(t_simulation *table)
 {
 	long		i;
 	t_philos	*philo;
@@ -40,21 +50,28 @@ void	set_up_philos(t_simulation *table)
 	while (i < table->philo_cnt)
 	{
 		philo = &table->philos[i];
+		philo->thread_id = malloc(sizeof(pthread_t));
+		if (!philo->thread_id)
+			return (error_msg("set_up_philos: thread_id: Malloc failed"));
 		philo->philo_id = i;
 		philo->meals_cnt = 0;
-		philo->time_since_last_meal = 0;
+		philo->last_meal_time = 0;
 		philo->is_full = 0;
 		philo->table = table;
 		assign_forks_each(philo, i, table->forks);
+		philo->mutex = malloc(sizeof(pthread_mutex_t));
+		if (!philo->mutex)
+				return (error_msg("set_up_philos: mutex Malloc	 failed"));
+		if (mutex_op(MUTEX_INIT, philo->mutex))
+			return (1);
 		i++;
 	}
-
-}
-
-void	table_flags_init(t_simulation *table)
-{
-	table->end_of_simulation = 0;
-	table->
+	table->write_mutex = malloc(sizeof(pthread_mutex_t));
+	if (!table->write_mutex)
+		return (error_msg("set_up_philos:table->write_mutex: Malloc failed"));
+	if (mutex_op(MUTEX_INIT, table->table_mutex))
+		return (1);
+	return (0);
 }
 
 int	data_init(t_simulation *table)
@@ -63,6 +80,7 @@ int	data_init(t_simulation *table)
 
 	i = -1;
 	table->end_of_simulation = 0;
+	table->all_thread_ready = 0;
 	table->table_mutex = malloc(sizeof(pthread_mutex_t));
 	if (!table->table_mutex)
 		return (error_msg("data_init: table->table_mutex: Malloc failed"));
@@ -74,13 +92,14 @@ int	data_init(t_simulation *table)
 	while (++i < table->philo_cnt)
 	{
 		if (mutex_op(MUTEX_INIT, &table->forks[i].fork))
-			return (1);
+			return (destroy_fork_init(table, i));
 		table->forks[i].fork_id = i;
 	}
 	table->philos = malloc(sizeof(t_philos) * table->philo_cnt);
 	if (!table->philos)
 		return (error_msg("data_init: table->philos: Malloc failed"));
-	set_up_philos(table);
+	if (set_up_philos(table))
+		return (1);
 	return (0);
 }
 

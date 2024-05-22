@@ -6,11 +6,81 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:16:00 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/16 11:53:38 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/22 13:43:29 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+
+
+//usleep majaorityy of time and then do some cpu intensive loops
+//uses spinlock so I don't want to use it
+void	godly_usleep(long time_to_sleep, t_simulation *table)
+{
+	long	start_time;
+	long	elapsed_time;
+	long	remaining_time;
+
+	start_time = get_time(GET_TIME_MICROSEC);
+	while (get_time(GET_TIME_MICROSEC) - start_time < time_to_sleep)
+	{
+		if (is_sim_finished(table))
+			break ;
+		elapsed_time = get_time(GET_TIME_MICROSEC) - start_time;
+		remaining_time = time_to_sleep - elapsed_time;
+		if (remaining_time > 1000)
+			usleep(time_to_sleep / 2);
+		else
+		{
+			while (get_time(GET_TIME_MICROSEC) - start_time < time_to_sleep)
+				;
+
+		}
+	}
+}
+
+void	ft_mysleep(long time_to_sleep, t_simulation *table)
+{
+	long	start_time;
+	long	elapsed_time;
+	long	remaining_time;
+
+	start_time = get_time(GET_TIME_MICROSEC);
+	while (get_time(GET_TIME_MICROSEC) - start_time < time_to_sleep)
+	{
+		if (is_sim_finished(table))
+			break ;
+		elapsed_time = get_time(GET_TIME_MICROSEC) - start_time;
+		remaining_time = time_to_sleep - elapsed_time;
+		if (remaining_time > 1000)
+			usleep(time_to_sleep / 2);
+		else
+		{
+			usleep(50);
+		}
+	}
+}
+
+long	get_time(t_opcode op)
+{
+	struct timeval	time_val;
+	long			time_in_s;
+	long			time_in_ms;
+	long			time_in_us;
+
+	gettimeofday(&time_val, NULL);
+	time_in_s = time_val.tv_sec + time_val.tv_usec / 1000000;
+	time_in_ms = time_val.tv_sec * 1000 + time_val.tv_usec / 1000;
+	time_in_us = time_val.tv_sec * 1000000 + time_val.tv_usec;
+	if (op == GET_TIME_MILLISEC)
+		return (time_in_ms);
+	else if (op == GET_TIME_MICROSEC)
+		return (time_in_us);
+	else if (op == GET_TIME_SECONDS)
+		return (time_in_s);
+	else
+		return (time_in_s);
+}
 
 int	error_msg(char *msg)
 {

@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 12:17:17 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/20 15:22:33 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/22 16:20:16 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,21 @@ void	free_forks(t_simulation *table)
 	}
 }
 
+void	free_philo(t_simulation *table)
+{
+	if (table->philos->mutex)
+	{
+		mutex_op(MUTEX_DESTROY, table->philos->mutex);
+		free(table->philos->mutex);
+		table->philos->mutex = NULL;
+	}
+	if (table->philos)
+	{
+		free(table->philos);
+		table->philos = NULL;
+	}
+}
+
 /**
  * @brief frees the memory allocated for the data in t_simulation struct.
  * @param table the main struct holding all the data for the simulation.
@@ -48,11 +63,13 @@ int	free_everything(t_simulation *table)
 		free(table->table_mutex);
 		table->table_mutex = NULL;
 	}
-	free_forks(table);
-	if (table->philos)
+	if (table->write_mutex)
 	{
-		free(table->philos);
-		table->philos = NULL;
+		mutex_op(MUTEX_DESTROY, table->write_mutex);
+		free(table->write_mutex);
+		table->write_mutex = NULL;
 	}
+	free_forks(table);
+	free_philo(table);
 	return (1);
 }

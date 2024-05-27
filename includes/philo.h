@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:16:32 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/22 17:48:21 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/27 16:53:11 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,13 +114,20 @@ int		mutex_op(t_opcode opcode, pthread_mutex_t *mutex);
 int		p_thread_op(t_opcode opcode, pthread_t *thread, void *(*func)(void *), void *arg);
 int		data_init(t_simulation *table);
 
-int	start_simulation(t_simulation *table);
+int		start_simulation(t_simulation *table);
 void	wait_for_all_threads_start(t_simulation *table);
 void	*dinner_routine(void *data);
+
+//monitor
+void	*monitor_routine(void *data);
+int		philo_health(t_philos *philo);
+int		all_threads_running(t_simulation *table);
+
 
 //write status
 void	write_status_debug(t_philo_status status, t_philos *philo, long time);
 void	write_status(t_philo_status status, t_philos *philo, int debug);
+void	write_dinner_check(t_simulation *table, int	debug);
 
 //actions
 void	philo_eat(t_philos *philo);

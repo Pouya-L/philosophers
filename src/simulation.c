@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 10:58:04 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/22 18:24:09 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/27 16:53:28 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,17 @@ void	*dinner_routine(void *data)
 
 	philo = (t_philos *)data;
 	wait_for_all_threads_start(philo->table);
+
+	set_long(philo->mutex, &philo->last_meal_time, get_time(GET_TIME_MILLISEC));
+
 	increment_long(philo->table->table_mutex, &philo->table->philo_active_cnt);
 
-	//set last meal time
 
 	//maine while loop
 	while (is_sim_finished(philo->table) == 0)
 	{
 		//am i full might need to change it and make it threadsafe
-		if (philo->is_full)
+		if (get_int(philo->mutex, &philo->is_full))
 			break ;
 
 		//eat
@@ -52,6 +54,26 @@ void	*dinner_routine(void *data)
 		//think
 		philo_think(philo);
 	}
+	return (NULL);
+}
+
+//same algo but fake lock fork
+//sleep until monittor bust it
+void	*lonely_dinner_routine(void *data)
+{
+	t_philos	*sad_philo;
+
+	sad_philo = (t_philos *)data;
+
+	wait_for_all_threads_start(sad_philo->table);
+
+	set_long(sad_philo->mutex, &sad_philo->last_meal_time, get_time(GET_TIME_MILLISEC));
+
+	increment_long(sad_philo->table->table_mutex, &sad_philo->table->philo_active_cnt);
+
+	write_status(TAKEN_FIRST_FORK, sad_philo, DEBUG);
+	while (!is_sim_finished(sad_philo->table))
+		usleep(200);
 	return (NULL);
 }
 
@@ -84,20 +106,24 @@ int	start_simulation(t_simulation *table)
 	int	i;
 
 	i = -1;
-	// if (table->philo_cnt == 1)
-	// 	//ad_hoc_function for only one philo
-	while (++i < table->philo_cnt)
+	if (table->philo_cnt == 1)
 	{
-		p_thread_op(THREAD_CREATE, table->philos[i].thread_id, dinner_routine, &table->philos[i]);
+		p_thread_op(THREAD_CREATE, table->philos[0].thread_id, lonely_dinner_routine, &table->philos[0]);
 	}
-
+	else
+	{
+		while (++i < table->philo_cnt)
+		{
+			p_thread_op(THREAD_CREATE, table->philos[i].thread_id, dinner_routine, &table->philos[i]);
+		}
+	}
 
 	//start of simulation
 	table->start_time = get_time(GET_TIME_MILLISEC);
 	set_int(table->table_mutex, &table->all_thread_ready, 1);
 
 	//creating and staring the monitor thread
-	p_thread_op(THREAD_CREATE, table->monitor, monitor_routine, table)
+	p_thread_op(THREAD_CREATE, &table->monitor, monitor_routine, table);
 	// join all thread
 	i = -1;
 	while (++i < table->philo_cnt)
@@ -105,5 +131,10 @@ int	start_simulation(t_simulation *table)
 		p_thread_op(THREAD_JOIN, table->philos[i].thread_id, NULL, NULL);
 	}
 	set_int(table->table_mutex, &table->end_of_simulation, 1);
+	p_thread_op(THREAD_JOIN, &table->monitor, NULL, NULL);
+	set_int(table->table_mutex, &table->end_of_simulation, 1);
+
+	write_dinner_check(table, DEBUG);
 	return (0);
+
 }

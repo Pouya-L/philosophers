@@ -6,7 +6,7 @@
 #    By: plashkar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/13 14:11:07 by plashkar          #+#    #+#              #
-#    Updated: 2024/05/22 16:26:24 by plashkar         ###   ########.fr        #
+#    Updated: 2024/05/23 12:22:31 by plashkar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ SRC = \
 	src/simulation.c \
 	src/actions.c \
 	src/status.c \
+	src/monitor.c \
 
 OBJ = $(SRC:.c=.o)
 

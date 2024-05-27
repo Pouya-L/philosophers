@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 21:00:31 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/22 16:29:45 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/27 10:40:24 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ int	data_init(t_simulation *table)
 	i = -1;
 	table->end_of_simulation = 0;
 	table->all_thread_ready = 0;
+	table->philo_active_cnt = 0;
 	table->table_mutex = malloc(sizeof(pthread_mutex_t));
 	if (!table->table_mutex)
 		return (error_msg("data_init: table->table_mutex: Malloc failed"));

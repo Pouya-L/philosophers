@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 10:58:04 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/27 16:53:28 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/28 20:56:27 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	wait_for_all_threads_start(t_simulation *table)
 	while(!get_int(table->table_mutex, &table->all_thread_ready))
 		;
 }
+
 
 void	*dinner_routine(void *data)
 {
@@ -57,8 +58,11 @@ void	*dinner_routine(void *data)
 	return (NULL);
 }
 
-//same algo but fake lock fork
-//sleep until monittor bust it
+/**
+ * @brief the lonely philo routine.
+ * This is a special case for when there is only one philo.
+ * He will eventually die of starvation. 
+*/
 void	*lonely_dinner_routine(void *data)
 {
 	t_philos	*sad_philo;

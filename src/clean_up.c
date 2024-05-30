@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 12:17:17 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/22 16:20:16 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/28 20:34:59 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	free_forks(t_simulation *table)
 	i = 0;
 	if (table->forks)
 	{
-		while(i < table->philo_cnt)
+		while (i < table->philo_cnt)
 		{
 			if (table->forks[i].fork_id != -1)
 				mutex_op(MUTEX_DESTROY, &table->forks[i].fork);

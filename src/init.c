@@ -6,15 +6,22 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 21:00:31 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/27 10:40:24 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/28 20:41:32 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
+/**
+ * @brief destroys the forks and frees the memory allocated for them.
+ * Will only be called if the program fails in the middle of initing the forks.
+ * @param table the main struct holding all the data for the simulation.
+ * @param i the index of the fork to start destroying from.
+ * @return 1 on success.
+*/
 int	destroy_fork_init(t_simulation *table, int i)
 {
-	while(i >= 0)
+	while (i >= 0)
 	{
 		mutex_op(MUTEX_DESTROY, &table->forks[i].fork);
 		i--;
@@ -22,6 +29,13 @@ int	destroy_fork_init(t_simulation *table, int i)
 	return (1);
 }
 
+/**
+ * @brief assigns the forks to the philos.
+ * @param philo the philo struct to assign the forks to.
+ * @param philo_pos the position of the philo in the philos array.
+ * @param forks the array of forks.
+ * @return void
+*/
 void	assign_forks_each(t_philos *philo, long philo_pos, t_forks *forks)
 {
 	long	philo_cnt;
@@ -38,8 +52,12 @@ void	assign_forks_each(t_philos *philo, long philo_pos, t_forks *forks)
 		philo->second_fork = &forks[philo_pos];
 	}
 }
+
 /**
- *
+ * @brief sets up the philos struct with the necessary data.
+ * If it fails on any of the steps, it will print an error message.
+ * @param table the main struct holding all the data for the simulation.
+ * @return 0 on success, 1 on failure.
 */
 int	set_up_philos(t_simulation *table)
 {
@@ -74,6 +92,12 @@ int	set_up_philos(t_simulation *table)
 	return (0);
 }
 
+/**
+ * @brief initializes the data for the simulation.
+ * If it fails on any of the steps, it will print an error message.
+ * @param table the main struct holding all the data for the simulation.
+ * @return 0 on success, 1 on failure.
+*/
 int	data_init(t_simulation *table)
 {
 	int	i;
@@ -104,6 +128,13 @@ int	data_init(t_simulation *table)
 	return (0);
 }
 
+/**
+ * @brief Wrapper function for pthread mutex operations.
+ * If it fails, it prints an error message.
+ * @param opcode the operation to be performed.
+ * @param mutex the mutex to be operated on.
+ * @return 0 on success, 1 on failure.
+*/
 int	mutex_op(t_opcode opcode, pthread_mutex_t *mutex)
 {
 	if (opcode == MUTEX_INIT)
@@ -129,6 +160,15 @@ int	mutex_op(t_opcode opcode, pthread_mutex_t *mutex)
 	return (0);
 }
 
+/**
+ * @brief Wrapper function for pthread operations.
+ * If it fails, it prints an error message.
+ * @param opcode the operation to be performed.
+ * @param thread the thread to be operated on.
+ * @param func the function to be executed by the thread.
+ * @param arg the argument to be passed to the function.
+ * @return 0 on success, 1 on failure.
+*/
 int	p_thread_op(t_opcode opcode, pthread_t *thread, void *(*func)(void *), void *arg)
 {
 	if (opcode == THREAD_CREATE)

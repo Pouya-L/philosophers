@@ -6,12 +6,17 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 18:13:53 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/27 11:49:05 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 01:52:11 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
+/**
+ * @brief checks if the philo is healthy. ie not staved to death.
+ * @param philo the philo struct to check.
+ * @return 1 if the philo is healthy, 0 otherwise.
+*/
 int	philo_health(t_philos *philo)
 {
 	long	elapsed_time;
@@ -19,7 +24,8 @@ int	philo_health(t_philos *philo)
 
 	if (get_int(philo->mutex, &philo->is_full))
 		return (1);
-	elapsed_time = get_time(GET_TIME_MILLISEC) - get_long(philo->mutex, &philo->last_meal_time);
+	elapsed_time = get_time(GET_TIME_MILLISEC) - get_long(philo->mutex, \
+	&philo->last_meal_time);
 	time_to_die = (philo->table->time_to_die);
 	if (elapsed_time > time_to_die)
 		return (0);
@@ -27,6 +33,11 @@ int	philo_health(t_philos *philo)
 		return (1);
 }
 
+/**
+ * @brief checks if all the threads are running in a thread safe way.
+ * @param table the main struct holding all the data for the simulation.
+ * @return 1 if all threads are running, 0 otherwise.
+*/
 int	all_threads_running(t_simulation *table)
 {
 	int	active_thread_cnt;
@@ -38,6 +49,14 @@ int	all_threads_running(t_simulation *table)
 		return (0);
 }
 
+/**
+ * @brief the monitor routine that checks the health of the philos.
+ * It starts with a spinlock until all the philos have started running.
+ * Then it checks the health of each philo in a loop.
+ * If a philo has died, it will print a message and set the end_of_simulation flag.
+ * @param data the main struct holding all the data for the simulation.
+ * @return void
+*/
 void	*monitor_routine(void *data)
 {
 	t_simulation *table;

@@ -6,12 +6,20 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:18:23 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/20 16:38:43 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/28 20:42:42 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
+/**
+ * @brief cheks the arguments passed to the program. assigns them to the
+ * table struct. If any of the arguments are invalid, it will print an error
+ * message and return 1.
+ * @param argv the arguments passed to the program.
+ * @param table the main struct holding all the data for the simulation.
+ * @return 0 on success, 1 on failure.
+ */
 int	check_args(char **argv, t_simulation *table)
 {
 	table->philo_cnt = ft_atol(argv[1]);
@@ -22,7 +30,7 @@ int	check_args(char **argv, t_simulation *table)
 	{
 		table->meals_to_eat_full = ft_atol(argv[5]);
 		if (table->meals_to_eat_full <= 0 || table->meals_to_eat_full > INT_MAX)
-		return (error_msg("Invalid meals_to_eat"));
+			return (error_msg("Invalid meals_to_eat"));
 	}
 	else
 		table->meals_to_eat_full = -1;

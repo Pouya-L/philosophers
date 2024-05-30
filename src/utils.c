@@ -6,39 +6,46 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:16:00 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/22 13:43:29 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/28 20:46:56 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
 
-//usleep majaorityy of time and then do some cpu intensive loops
-//uses spinlock so I don't want to use it
-void	godly_usleep(long time_to_sleep, t_simulation *table)
-{
-	long	start_time;
-	long	elapsed_time;
-	long	remaining_time;
+// //usleep majaorityy of time and then do some cpu intensive loops
+// //uses spinlock so I don't want to use it
+// void	godly_usleep(long time_to_sleep, t_simulation *table)
+// {
+// 	long	start_time;
+// 	long	elapsed_time;
+// 	long	remaining_time;
 
-	start_time = get_time(GET_TIME_MICROSEC);
-	while (get_time(GET_TIME_MICROSEC) - start_time < time_to_sleep)
-	{
-		if (is_sim_finished(table))
-			break ;
-		elapsed_time = get_time(GET_TIME_MICROSEC) - start_time;
-		remaining_time = time_to_sleep - elapsed_time;
-		if (remaining_time > 1000)
-			usleep(time_to_sleep / 2);
-		else
-		{
-			while (get_time(GET_TIME_MICROSEC) - start_time < time_to_sleep)
-				;
+// 	start_time = get_time(GET_TIME_MICROSEC);
+// 	while (get_time(GET_TIME_MICROSEC) - start_time < time_to_sleep)
+// 	{
+// 		if (is_sim_finished(table))
+// 			break ;
+// 		elapsed_time = get_time(GET_TIME_MICROSEC) - start_time;
+// 		remaining_time = time_to_sleep - elapsed_time;
+// 		if (remaining_time > 1000)
+// 			usleep(time_to_sleep / 2);
+// 		else
+// 		{
+// 			while (get_time(GET_TIME_MICROSEC) - start_time < time_to_sleep)
+// 				;
 
-		}
-	}
-}
+// 		}
+// 	}
+// }
 
+/**
+ * @brief sleeps for the given time. If the simulation is finished, it will break
+ * out of the loop. This is more accurate than just using usleep.
+ * @param time_to_sleep the time to sleep in microseconds.
+ * @param table the main struct holding all the data for the simulation.
+ * @return void
+*/
 void	ft_mysleep(long time_to_sleep, t_simulation *table)
 {
 	long	start_time;
@@ -61,6 +68,11 @@ void	ft_mysleep(long time_to_sleep, t_simulation *table)
 	}
 }
 
+/**
+ * @brief gets the current time in seconds, milliseconds or microseconds.
+ * @param op the opcode to specify the time format.
+ * @return the time in the specified format.
+*/
 long	get_time(t_opcode op)
 {
 	struct timeval	time_val;
@@ -82,12 +94,22 @@ long	get_time(t_opcode op)
 		return (time_in_s);
 }
 
+/**
+ * @brief prints an error message in red and then returns 1.
+ * @param msg the message to print.
+ * @return 1
+*/
 int	error_msg(char *msg)
 {
 	printf("%s%s%s\n", RED, msg, DEFAULT);
 	return (1);
 }
 
+/**
+ * @brief returns the LONG_MAX or LONG_MIN if ft_atol faces an overflow.
+ * @param sign the sign of the number.
+ * @return LONG_MAX or LONG_MIN.
+*/
 long	ft_l_overflow_err(int sign)
 {
 	if (sign == 1)
@@ -96,6 +118,12 @@ long	ft_l_overflow_err(int sign)
 		return (LONG_MIN);
 }
 
+/**
+ * @brief converts a string to a long.
+ * It also will check for any overflow errors.
+ * @param str the string to convert.
+ * @return the long value of the string.
+*/
 long	ft_atol(const char *str)
 {
 	int		sign;

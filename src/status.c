@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 11:25:33 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/28 00:48:39 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/28 00:53:12 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	write_status(t_philo_status status, t_philos *philo, int debug)
 
 static void	print_check_top(t_simulation *table)
 {
-	printf("|-------------------------------------------------------|\n");
+	printf("\n|-------------------------------------------------------|\n");
 	printf("| Simulation Data:\t\t\tServer : Pouya\t|\n");
 	printf("|-------------------------------------------------------|\n");
 	printf("| Philosopher Count: %ld\t\t\t\t\t|\n", table->philo_cnt);

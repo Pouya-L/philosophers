@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 12:17:17 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/28 20:34:59 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 10:59:53 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,23 @@ void	free_forks(t_simulation *table)
 
 void	free_philo(t_simulation *table)
 {
-	if (table->philos->mutex)
-	{
-		mutex_op(MUTEX_DESTROY, table->philos->mutex);
-		free(table->philos->mutex);
-		table->philos->mutex = NULL;
-	}
+	int	i;
+
+	i = 0;
+
 	if (table->philos)
 	{
+		while (i < table->philo_cnt)
+		{
+			if (table->philos[i].mutex)
+			{
+				mutex_op(MUTEX_DESTROY, table->philos[i].mutex);
+				free(table->philos[i].mutex);
+				table->philos[i].mutex = NULL;
+			}
+			free(table->philos[i].thread_id);
+			i++;
+		}
 		free(table->philos);
 		table->philos = NULL;
 	}

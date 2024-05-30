@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 14:26:28 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/28 20:51:54 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 13:07:05 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,29 @@ void	philo_sleep(t_philos *philo)
 }
 
 /**
- * STILL TO BE WORKED ON
- * @brief the philo thinks and prints the status.
+ * @brief the philo thinks and prints the status. This is the only part
+ * where we can actually influence the code and make it "fair" if the number
+ * of philos is odd.
+ * it uses the same formula as in desync_philos to calculate the time to think.
+ * If the philo count is eveen it just returns since the system is already fair
+ * however if the philo count is odd it sleeps for the optimal time to
+ * think * a random number between 0 and 1.
  * @param philo the philo struct to think.
 */
 void	philo_think(t_philos *philo)
 {
+	long	time_to_eat;
+	long	time_to_sleep;
+	long	time_to_think;
+
+	time_to_eat = philo->table->time_to_eat * 1000;
+	time_to_sleep = philo->table->time_to_sleep * 1000;
+	time_to_think = time_to_eat * 2 - time_to_sleep;
+	if (time_to_think < 0)
+		time_to_think = 0;
 	write_status(THINKING, philo, DEBUG);
+	if (philo->table->philo_cnt % 2 == 0)
+		return ;
+	ft_mysleep(time_to_think * 0.42, philo->table);
 	return ;
 }

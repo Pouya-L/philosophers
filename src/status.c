@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 11:25:33 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/28 00:53:12 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 11:31:24 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,34 @@
 
 void	write_status_debug(t_philo_status status, t_philos *philo, long time)
 {
+	int		philo_id_prntbl;
+
+	philo_id_prntbl = philo->philo_id + 1;
 	if (status == TAKEN_FIRST_FORK && !is_sim_finished(philo->table))
 		printf("%ld %d has taken the first fork with the id %d🥇🍴\n", \
-		time, philo->philo_id, philo->first_fork->fork_id);
+		time, philo_id_prntbl, philo->first_fork->fork_id);
 	else if (status == TAKEN_SECOND_FORK && !is_sim_finished(philo->table))
 		printf("%ld %d has taken the second fork with the id %d🥈🍴\n", \
-		time, philo->philo_id, philo->second_fork->fork_id);
+		time, philo_id_prntbl, philo->second_fork->fork_id);
 	else if (status == EATING && !is_sim_finished(philo->table))
 	{
-		printf("%ld philo %d is eating 😋🍽️\n", time, philo->philo_id);
+		printf("%ld philo %d is eating 😋🍽️\n", time, philo_id_prntbl);
 		printf("🍗 This philo has eaten %d meals 🍗\n", philo->meals_cnt);
 	}
 	else if (status == SLEEPING && !is_sim_finished(philo->table))
-		printf("%ld %d is sleeping 😴💤💤\n", time, philo->philo_id);
+		printf("%ld %d is sleeping 😴💤💤\n", time, philo_id_prntbl);
 	else if (status == THINKING && !is_sim_finished(philo->table))
-		printf("%ld %d is thinking 🤔\n", time, philo->philo_id);
+		printf("%ld %d is thinking 🤔\n", time, philo_id_prntbl);
 	else if (status == DIED && !is_sim_finished(philo->table))
-		printf("💀 %s%ld %d %sdied!💀\n", RED, time, philo->philo_id, DEFAULT);
+		printf("💀 %s%ld %d %sdied!💀\n", RED, time, philo_id_prntbl, DEFAULT);
 }
 
 void	write_status(t_philo_status status, t_philos *philo, int debug)
 {
 	long	elapsed_time;
+	int		philo_id_prntble;
 
+	philo_id_prntble = philo->philo_id + 1;
 	if (get_int(philo->mutex, &philo->is_full))
 		return ;
 	mutex_op(MUTEX_LOCK, philo->table->write_mutex);
@@ -47,15 +52,15 @@ void	write_status(t_philo_status status, t_philos *philo, int debug)
 	{
 		if ((status == TAKEN_FIRST_FORK || status == TAKEN_SECOND_FORK) && \
 		!is_sim_finished(philo->table))
-			printf("%ld %d has taken a fork\n", elapsed_time, philo->philo_id);
+			printf("%ld %d has taken a fork\n", elapsed_time, philo_id_prntble);
 		else if (status == EATING && !is_sim_finished(philo->table))
-			printf("%ld %d is eating\n", elapsed_time, philo->philo_id);
+			printf("%ld %d is eating\n", elapsed_time, philo_id_prntble);
 		else if (status == SLEEPING && !is_sim_finished(philo->table))
-			printf("%ld %d is sleeping\n", elapsed_time, philo->philo_id);
+			printf("%ld %d is sleeping\n", elapsed_time, philo_id_prntble);
 		else if (status == THINKING && !is_sim_finished(philo->table))
-			printf("%ld %d is thinking\n", elapsed_time, philo->philo_id);
+			printf("%ld %d is thinking\n", elapsed_time, philo_id_prntble);
 		else if (status == DIED && !is_sim_finished(philo->table))
-			printf("%ld %d died\n", elapsed_time, philo->philo_id);
+			printf("%ld %d died\n", elapsed_time, philo_id_prntble);
 	}
 	mutex_op(MUTEX_UNLOCK, philo->table->write_mutex);
 }
@@ -119,7 +124,7 @@ void	write_dinner_check(t_simulation *table, int debug)
 	{
 		j += table->philos[i].meals_cnt;
 		printf("| %d\t%d\t\t%ld\t\t%d\t\t|\n",
-			table->philos[i].philo_id,
+			table->philos[i].philo_id + 1,
 			table->philos[i].meals_cnt,
 			(table->philos[i].last_meal_time - table->start_time),
 			table->philos[i].is_full);

@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 10:58:04 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/28 20:56:27 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 13:18:31 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,33 @@ void	wait_for_all_threads_start(t_simulation *table)
 		;
 }
 
+/**
+ * @brief It desyncronizes the philosophers so there isn't a lot of contention
+ * for the forks. It uses a formula to get the optimal time to think.
+ * if the philos are even, it sleeps for 30ms, otherwise it sleeps for the
+ * optimal time to think * a random number between 0 and 1.
+*/
+void	desync_philos(t_philos *philo)
+{
+	long	time_to_eat;
+	long	time_to_sleep;
+	long	time_to_think;
+
+	time_to_eat = philo->table->time_to_eat * 1000;
+	time_to_sleep = philo->table->time_to_sleep * 1000;
+	time_to_think = time_to_eat * 2 - time_to_sleep;
+	if (time_to_think < 0)
+		time_to_think = 0;
+	if (philo->table->philo_cnt % 2 == 0)
+	{
+		if (philo->philo_id % 2 == 0)
+			ft_mysleep(30, philo->table);
+	}
+	else
+	{
+		ft_mysleep(time_to_think * 0.42, philo->table);
+	}
+}
 
 void	*dinner_routine(void *data)
 {
@@ -38,6 +65,7 @@ void	*dinner_routine(void *data)
 
 	increment_long(philo->table->table_mutex, &philo->table->philo_active_cnt);
 
+	desync_philos(philo);
 
 	//maine while loop
 	while (is_sim_finished(philo->table) == 0)
@@ -54,6 +82,8 @@ void	*dinner_routine(void *data)
 
 		//think
 		philo_think(philo);
+
+
 	}
 	return (NULL);
 }
@@ -61,7 +91,7 @@ void	*dinner_routine(void *data)
 /**
  * @brief the lonely philo routine.
  * This is a special case for when there is only one philo.
- * He will eventually die of starvation. 
+ * He will eventually die of starvation.
 */
 void	*lonely_dinner_routine(void *data)
 {
@@ -82,26 +112,15 @@ void	*lonely_dinner_routine(void *data)
 }
 
 /**
- *
- * what should this function do?
- * ./philo 5 800 200 200 [5]
- *
- * if [5] is not provided, it should be -1 however if its zero then the simulation\
- * should not run
- *
- * if only one philo, a special function
- *
- * create all the threads
- *
- * monitor all the threads and the monitor function should find out
- * if a philo is dead or not as ASAP
- *
- * synronize the begging of the strads they should run simulatounsly
- *
- * finally join everyone
- *
  * @brief The main simulation function. It creates threads for each philosopher
  * and starts the simulation.
+ * if there is only one philo, creates the thread with the lonely_dinner_routine.
+ * else it will create threads for each philo and start the dinner_routine.
+ * afterwards it sets the start_time in the table struct.
+ * then it creates the monitor thread and waits for all the threads to finish.
+ * if all threads join, htat means the simulation is over, so it sets the flag
+ * for the end of the simulation in thread safe way.
+ * Finally it joins the monitor thread and writes the dinner check.
  * @param table the main struct holding all the data for the simulation.
  * @return int 1 if error, 0 if success.
 */
@@ -111,34 +130,22 @@ int	start_simulation(t_simulation *table)
 
 	i = -1;
 	if (table->philo_cnt == 1)
-	{
-		p_thread_op(THREAD_CREATE, table->philos[0].thread_id, lonely_dinner_routine, &table->philos[0]);
-	}
+		p_thread_op(THREAD_CREATE, table->philos[0].thread_id, \
+		lonely_dinner_routine, &table->philos[0]);
 	else
 	{
 		while (++i < table->philo_cnt)
-		{
-			p_thread_op(THREAD_CREATE, table->philos[i].thread_id, dinner_routine, &table->philos[i]);
-		}
+			p_thread_op(THREAD_CREATE, table->philos[i].thread_id, \
+			dinner_routine, &table->philos[i]);
 	}
-
-	//start of simulation
 	table->start_time = get_time(GET_TIME_MILLISEC);
 	set_int(table->table_mutex, &table->all_thread_ready, 1);
-
-	//creating and staring the monitor thread
 	p_thread_op(THREAD_CREATE, &table->monitor, monitor_routine, table);
-	// join all thread
 	i = -1;
 	while (++i < table->philo_cnt)
-	{
 		p_thread_op(THREAD_JOIN, table->philos[i].thread_id, NULL, NULL);
-	}
 	set_int(table->table_mutex, &table->end_of_simulation, 1);
 	p_thread_op(THREAD_JOIN, &table->monitor, NULL, NULL);
-	set_int(table->table_mutex, &table->end_of_simulation, 1);
-
 	write_dinner_check(table, DEBUG);
 	return (0);
-
 }

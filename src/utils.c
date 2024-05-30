@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:16:00 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/28 20:46:56 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 11:18:05 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	ft_mysleep(long time_to_sleep, t_simulation *table)
 		elapsed_time = get_time(GET_TIME_MICROSEC) - start_time;
 		remaining_time = time_to_sleep - elapsed_time;
 		if (remaining_time > 1000)
-			usleep(time_to_sleep / 2);
+			usleep(remaining_time / 2);
 		else
 		{
 			usleep(50);

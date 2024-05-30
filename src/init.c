@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 21:00:31 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/28 20:41:32 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 11:08:34 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	set_up_philos(t_simulation *table)
 	table->write_mutex = malloc(sizeof(pthread_mutex_t));
 	if (!table->write_mutex)
 		return (error_msg("set_up_philos:table->write_mutex: Malloc failed"));
-	if (mutex_op(MUTEX_INIT, table->table_mutex))
+	if (mutex_op(MUTEX_INIT, table->write_mutex))
 		return (1);
 	return (0);
 }

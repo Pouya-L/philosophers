@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:16:32 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/28 00:56:26 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 11:45:47 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 # define CYAN "\033[0;36m"
 # define WHITE "\033[0;37m"
 
-# define DEBUG 1
+# define DEBUG 0
 
 /**
  * @brief enum for the different operations that can be performed

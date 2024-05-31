@@ -5,7 +5,6 @@ The dining philosophers problem is a well-known example in the field of computer
 
 [More info on Wikipedia](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
 
-More informations
 ## Mandatory Part
 `philo`: This program simulates philosophers using threads and mutex. Each philosopher is represented as a thread. There is one fork between each philosopher, protected by a mutex. Philosophers must adhere to the specified rules: eating, thinking, or sleeping without conflicts. The aim is to learn how to deal with deadlocks and how to lower contention. Also we need to know how to synchronize and desynchronize threads at each given state.  
 

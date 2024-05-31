@@ -6,38 +6,11 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:16:00 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/30 11:18:05 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 16:04:24 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-
-
-// //usleep majaorityy of time and then do some cpu intensive loops
-// //uses spinlock so I don't want to use it
-// void	godly_usleep(long time_to_sleep, t_simulation *table)
-// {
-// 	long	start_time;
-// 	long	elapsed_time;
-// 	long	remaining_time;
-
-// 	start_time = get_time(GET_TIME_MICROSEC);
-// 	while (get_time(GET_TIME_MICROSEC) - start_time < time_to_sleep)
-// 	{
-// 		if (is_sim_finished(table))
-// 			break ;
-// 		elapsed_time = get_time(GET_TIME_MICROSEC) - start_time;
-// 		remaining_time = time_to_sleep - elapsed_time;
-// 		if (remaining_time > 1000)
-// 			usleep(time_to_sleep / 2);
-// 		else
-// 		{
-// 			while (get_time(GET_TIME_MICROSEC) - start_time < time_to_sleep)
-// 				;
-
-// 		}
-// 	}
-// }
 
 /**
  * @brief sleeps for the given time. If the simulation is finished, it will break

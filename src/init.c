@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 21:00:31 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/30 11:08:34 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/31 14:20:57 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,15 +71,11 @@ int	set_up_philos(t_simulation *table)
 		philo->thread_id = malloc(sizeof(pthread_t));
 		if (!philo->thread_id)
 			return (error_msg("set_up_philos: thread_id: Malloc failed"));
-		philo->philo_id = i;
-		philo->meals_cnt = 0;
-		philo->last_meal_time = 0;
-		philo->is_full = 0;
-		philo->table = table;
+		init_table_philo_util(table, philo, 1, i);
 		assign_forks_each(philo, i, table->forks);
 		philo->mutex = malloc(sizeof(pthread_mutex_t));
 		if (!philo->mutex)
-				return (error_msg("set_up_philos: mutex Malloc	 failed"));
+			return (error_msg("set_up_philos: mutex Malloc failed"));
 		if (mutex_op(MUTEX_INIT, philo->mutex))
 			return (1);
 		i++;
@@ -103,9 +99,7 @@ int	data_init(t_simulation *table)
 	int	i;
 
 	i = -1;
-	table->end_of_simulation = 0;
-	table->all_thread_ready = 0;
-	table->philo_active_cnt = 0;
+	init_table_philo_util(table, NULL, 0, 0);
 	table->table_mutex = malloc(sizeof(pthread_mutex_t));
 	if (!table->table_mutex)
 		return (error_msg("data_init: table->table_mutex: Malloc failed"));
@@ -125,66 +119,5 @@ int	data_init(t_simulation *table)
 		return (error_msg("data_init: table->philos: Malloc failed"));
 	if (set_up_philos(table))
 		return (1);
-	return (0);
-}
-
-/**
- * @brief Wrapper function for pthread mutex operations.
- * If it fails, it prints an error message.
- * @param opcode the operation to be performed.
- * @param mutex the mutex to be operated on.
- * @return 0 on success, 1 on failure.
-*/
-int	mutex_op(t_opcode opcode, pthread_mutex_t *mutex)
-{
-	if (opcode == MUTEX_INIT)
-	{
-		if (pthread_mutex_init(mutex, NULL))
-			return (error_msg("Mutex init failed"));
-	}
-	else if (opcode == MUTEX_LOCK)
-	{
-		if (pthread_mutex_lock(mutex))
-			return (error_msg("Mutex lock failed"));
-	}
-	else if (opcode == MUTEX_UNLOCK)
-	{
-		if (pthread_mutex_unlock(mutex))
-			return (error_msg("Mutex unlock failed"));
-	}
-	else if (opcode == MUTEX_DESTROY)
-	{
-		if (pthread_mutex_destroy(mutex))
-			return (error_msg("Mutex destroy failed"));
-	}
-	return (0);
-}
-
-/**
- * @brief Wrapper function for pthread operations.
- * If it fails, it prints an error message.
- * @param opcode the operation to be performed.
- * @param thread the thread to be operated on.
- * @param func the function to be executed by the thread.
- * @param arg the argument to be passed to the function.
- * @return 0 on success, 1 on failure.
-*/
-int	p_thread_op(t_opcode opcode, pthread_t *thread, void *(*func)(void *), void *arg)
-{
-	if (opcode == THREAD_CREATE)
-	{
-		if (pthread_create(thread, NULL, func, arg))
-			return (error_msg("Thread create failed"));
-	}
-	else if (opcode == THREAD_JOIN)
-	{
-		if (pthread_join(*thread, NULL))
-			return (error_msg("Thread join failed"));
-	}
-	else if (opcode == THREAD_DETACH)
-	{
-		if (pthread_detach(*thread))
-			return (error_msg("Thread detach failed"));
-	}
 	return (0);
 }

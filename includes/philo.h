@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:16:32 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/30 11:45:47 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/31 14:21:57 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ typedef enum e_philo_status
 	DIED,
 }	t_philo_status;
 
-typedef struct s_simulation t_simulation;
+typedef struct s_simulation	t_simulation;
 
 typedef struct s_forks
 {
@@ -108,12 +108,15 @@ int		check_args(char **argv, t_simulation *table);
 long	get_time(t_opcode op);
 void	ft_mysleep(long time_to_sleep, t_simulation *table);
 
-
 //data init
 int		mutex_op(t_opcode opcode, pthread_mutex_t *mutex);
-int		p_thread_op(t_opcode opcode, pthread_t *thread, void *(*func)(void *), void *arg);
+int		p_thread_op(t_opcode opcode, pthread_t *thread, \
+		void *(*func)(void *), void *arg);
 int		data_init(t_simulation *table);
+void	init_table_philo_util(t_simulation *table, t_philos *philo, \
+		int type, int i);
 
+//dinner
 int		start_simulation(t_simulation *table);
 void	wait_for_all_threads_start(t_simulation *table);
 void	*dinner_routine(void *data);
@@ -123,17 +126,15 @@ void	*monitor_routine(void *data);
 int		philo_health(t_philos *philo);
 int		all_threads_running(t_simulation *table);
 
-
 //write status
 void	write_status_debug(t_philo_status status, t_philos *philo, long time);
 void	write_status(t_philo_status status, t_philos *philo, int debug);
-void	write_dinner_check(t_simulation *table, int	debug);
+void	write_dinner_check(t_simulation *table, int debug);
 
 //actions
 void	philo_eat(t_philos *philo);
 void	philo_sleep(t_philos *philo);
 void	philo_think(t_philos *philo);
-
 
 //test functions
 int		test_print_table_info(t_simulation *table);
@@ -151,6 +152,5 @@ int		is_sim_finished(t_simulation *table);
 //clean up
 int		free_everything(t_simulation *table);
 void	free_forks(t_simulation *table);
-
 
 #endif

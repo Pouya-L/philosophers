@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 18:13:53 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/30 01:52:11 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 15:59:09 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,17 +53,16 @@ int	all_threads_running(t_simulation *table)
  * @brief the monitor routine that checks the health of the philos.
  * It starts with a spinlock until all the philos have started running.
  * Then it checks the health of each philo in a loop.
- * If a philo has died, it will print a message and set the end_of_simulation flag.
+ * If a philo has died, it prints a message & set the end_of_simulation flag.
  * @param data the main struct holding all the data for the simulation.
  * @return void
 */
 void	*monitor_routine(void *data)
 {
-	t_simulation *table;
-	int	i;
+	t_simulation	*table;
+	int				i;
 
 	table = (t_simulation *)data;
-	//spinlock until all threads are running
 	while (!all_threads_running(table))
 	{
 		ft_mysleep(50, table);

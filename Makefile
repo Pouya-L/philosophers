@@ -6,7 +6,7 @@
 #    By: plashkar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/13 14:11:07 by plashkar          #+#    #+#              #
-#    Updated: 2024/05/28 01:39:35 by plashkar         ###   ########.fr        #
+#    Updated: 2024/05/30 16:16:08 by plashkar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,8 @@ philo_LIB = philo.a
 
 SRC = \
 	src/main.c \
-	src/utils.c \
+	src/utils_0.c \
+	src/utils_1.c \
 	src/parser.c \
 	src/init.c \
 	src/test.c \

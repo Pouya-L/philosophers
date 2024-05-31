@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 10:58:04 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/30 13:18:31 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 16:14:12 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 */
 void	wait_for_all_threads_start(t_simulation *table)
 {
-	while(!get_int(table->table_mutex, &table->all_thread_ready))
+	while (!get_int(table->table_mutex, &table->all_thread_ready))
 		;
 }
 
@@ -54,36 +54,36 @@ void	desync_philos(t_philos *philo)
 	}
 }
 
+/**
+ * @brief the philo routine.
+ * 1. starts with a spinlock until all the philos have started running.
+ * 2. sets the last meal time needed later by monitor to check if the
+ *    philo staved to death or not. It increments the philo_active_cnt to keep
+ *    track of the number of philos that are now running, this is needed for
+ *    syncronization of the monitor thread.
+ * 3. It then desyncronizes the philos to decrease the ammount of contention
+ * 4. enters a while loop that will keep running until the simulation is over.
+ *    This is the main loop where it checks if the philo is full or not in the
+ *    beginning of the loop. then it eats, sleeps and thinks.
+ * @param data the philo struct.
+ * @return void
+*/
 void	*dinner_routine(void *data)
 {
-	t_philos *philo;
+	t_philos	*philo;
 
 	philo = (t_philos *)data;
 	wait_for_all_threads_start(philo->table);
-
 	set_long(philo->mutex, &philo->last_meal_time, get_time(GET_TIME_MILLISEC));
-
 	increment_long(philo->table->table_mutex, &philo->table->philo_active_cnt);
-
 	desync_philos(philo);
-
-	//maine while loop
 	while (is_sim_finished(philo->table) == 0)
 	{
-		//am i full might need to change it and make it threadsafe
 		if (get_int(philo->mutex, &philo->is_full))
 			break ;
-
-		//eat
 		philo_eat(philo);
-
-		//sleep we need to write a precise usleep and wirte the sattus
 		philo_sleep(philo);
-
-		//think
 		philo_think(philo);
-
-
 	}
 	return (NULL);
 }
@@ -92,19 +92,18 @@ void	*dinner_routine(void *data)
  * @brief the lonely philo routine.
  * This is a special case for when there is only one philo.
  * He will eventually die of starvation.
+ * @return void
 */
 void	*lonely_dinner_routine(void *data)
 {
 	t_philos	*sad_philo;
 
 	sad_philo = (t_philos *)data;
-
 	wait_for_all_threads_start(sad_philo->table);
-
-	set_long(sad_philo->mutex, &sad_philo->last_meal_time, get_time(GET_TIME_MILLISEC));
-
-	increment_long(sad_philo->table->table_mutex, &sad_philo->table->philo_active_cnt);
-
+	set_long(sad_philo->mutex, &sad_philo->last_meal_time, \
+	get_time(GET_TIME_MILLISEC));
+	increment_long(sad_philo->table->table_mutex, \
+	&sad_philo->table->philo_active_cnt);
 	write_status(TAKEN_FIRST_FORK, sad_philo, DEBUG);
 	while (!is_sim_finished(sad_philo->table))
 		usleep(200);
@@ -112,15 +111,16 @@ void	*lonely_dinner_routine(void *data)
 }
 
 /**
- * @brief The main simulation function. It creates threads for each philosopher
- * and starts the simulation.
+ * @brief The main simulation function.
+ * 1. It creates threads for each philosopher and starts the simulation.
  * if there is only one philo, creates the thread with the lonely_dinner_routine.
  * else it will create threads for each philo and start the dinner_routine.
- * afterwards it sets the start_time in the table struct.
- * then it creates the monitor thread and waits for all the threads to finish.
- * if all threads join, htat means the simulation is over, so it sets the flag
- * for the end of the simulation in thread safe way.
- * Finally it joins the monitor thread and writes the dinner check.
+ * 2. it sets the start_time in the table struct.
+ * 3. then it creates the monitor thread.
+ * 4. waits for all the threads to finish.
+ * 5. if all threads join, that means the simulation is over, so it sets
+ *    the flag for the end of the simulation in thread safe way.
+ * 6. Finally it joins the monitor thread and writes the dinner check.
  * @param table the main struct holding all the data for the simulation.
  * @return int 1 if error, 0 if success.
 */

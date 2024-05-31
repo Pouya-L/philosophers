@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 14:26:28 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/30 13:07:05 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 15:55:56 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	philo_eat(t_philos *philo)
 	write_status(TAKEN_FIRST_FORK, philo, DEBUG);
 	mutex_op(MUTEX_LOCK, &philo->second_fork->fork);
 	write_status(TAKEN_SECOND_FORK, philo, DEBUG);
-
 	set_long(philo->mutex, &philo->last_meal_time, get_time(GET_TIME_MILLISEC));
 	philo->meals_cnt++;
 	write_status(EATING, philo, DEBUG);

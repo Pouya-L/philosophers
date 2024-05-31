@@ -6,7 +6,7 @@
 /*   By: plashkar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 11:45:02 by plashkar          #+#    #+#             */
-/*   Updated: 2024/05/28 20:52:45 by plashkar         ###   ########.fr       */
+/*   Updated: 2024/05/30 16:18:18 by plashkar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	set_int(pthread_mutex_t *mutex, int *dest_int, int value_to_set)
 */
 int	get_int(pthread_mutex_t *mutex, int *value)
 {
-	int return_value;
+	int	return_value;
 
 	mutex_op(MUTEX_LOCK, mutex);
 	return_value = *value;
@@ -77,22 +77,10 @@ void	increment_long(pthread_mutex_t *mutex, long *dest_long)
 */
 long	get_long(pthread_mutex_t *mutex, long *value)
 {
-	long return_value;
+	long	return_value;
 
 	mutex_op(MUTEX_LOCK, mutex);
 	return_value = *value;
 	mutex_op(MUTEX_UNLOCK, mutex);
 	return (return_value);
 }
-
-/**
- * @brief checks if the simulation has finished in a thread safe way.
- * @param table the main struct holding all the data for the simulation.
- * @return int 1 if the simulation has finished, 0 otherwise.
-*/
-int	is_sim_finished(t_simulation *table)
-{
-	return(get_int(table->table_mutex, &table->end_of_simulation));
-}
-
-

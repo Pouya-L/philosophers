@@ -23,7 +23,7 @@
 void	wait_for_all_threads_start(t_simulation *table)
 {
 	while (!get_int(table->table_mutex, &table->all_thread_ready))
-		;
+		ft_mysleep(10, table);
 }
 
 /**

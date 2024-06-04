@@ -28,9 +28,9 @@ void	philo_eat(t_philos *philo)
 	mutex_op(MUTEX_LOCK, &philo->second_fork->fork);
 	write_status(TAKEN_SECOND_FORK, philo, DEBUG);
 	set_long(philo->mutex, &philo->last_meal_time, get_time(GET_TIME_MILLISEC));
-	philo->meals_cnt++;
 	write_status(EATING, philo, DEBUG);
 	ft_mysleep(philo->table->time_to_eat * 1000, philo->table);
+	philo->meals_cnt++;
 	if (philo->table->meals_to_eat_full > 0 && philo->meals_cnt == \
 	philo->table->meals_to_eat_full)
 		set_int(philo->mutex, &philo->is_full, 1);

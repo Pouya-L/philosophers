@@ -101,10 +101,13 @@ struct s_simulation
 };
 
 //utils
+
 int		error_msg(char *msg);
 long	ft_atol(const char *str);
 long	ft_l_overflow_err(int sign);
 int		check_args(char **argv, t_simulation *table);
+int		ft_check_argv_digits(char **argv);
+int		ft_is_digit(char *str);
 long	get_time(t_opcode op);
 void	ft_mysleep(long time_to_sleep, t_simulation *table);
 

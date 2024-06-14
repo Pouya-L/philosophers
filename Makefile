@@ -14,7 +14,7 @@ NAME = philo
 
 CC = cc
 
-STANDARD_FLAGS = -Wall -Werror -Wextra -g #-fsanitize=address
+STANDARD_FLAGS = -Wall -Werror -Wextra -g -pthread #-fsanitize=thread
 
 philo_LIB = philo.a
 
